@@ -1,8 +1,8 @@
 {
 	"actorSpecification": 1,
-	"name": "actor-mastra-mcp",
-	"title": "Mastra Agent TypeScript",
-	"description": "Mastra Agent in TypeScript",
+	"name": "actor-mastra-mcp-agent",
+	"title": "Mastra MCP agent",
+	"description": "Mastra MCP agent",
 	"version": "0.0",
 	"buildTag": "latest",
 	"storages": {

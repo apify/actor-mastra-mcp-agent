@@ -1,0 +1,24 @@
+name: Deploy Actor to Apify
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-to-apify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Push to Apify
+        uses: apify/push-actor-action@master
+        with:
+          token: ${{ secrets.APIFY_TOKEN }}

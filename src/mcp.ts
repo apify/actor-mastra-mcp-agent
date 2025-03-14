@@ -8,7 +8,7 @@ import { MCP_SERVER_URL_BASE } from './const.js';
  * @param {string[]} [actors] - Optional array of Actor names to be included in the server
  * @returns {Promise<void>}
  */
-export async function startMCPServer(
+export async function startMCPServer (
     apifyToken: string,
     actors?: string[],
 ): Promise<void> {
@@ -22,7 +22,7 @@ export async function startMCPServer(
  * @param {string} apifyToken - The Apify API token for authentication
  * @returns {MastraMCPClient} MCP client instance
  */
-export function createMCPClient(apifyToken: string): MastraMCPClient {
+export function createMCPClient (apifyToken: string): MastraMCPClient {
     return new MastraMCPClient({
         name: 'apify-client',
         server: {

@@ -5,9 +5,10 @@
         "moduleResolution": "NodeNext",
         "target": "ES2022",
         "outDir": "dist",
-        "noUnusedLocals": false,
-        "skipLibCheck": true,
-        "lib": ["DOM"],
+        "strict": true,              // Enable all strict options
+        "noUnusedLocals": true,      // Catch unused variables
+        "skipLibCheck": false,       // Check declaration files unless performance is an issue
+        "lib": []                    // Remove DOM unless needed; Node globals are sufficient
     },
     "include": [
         "./src/**/*"

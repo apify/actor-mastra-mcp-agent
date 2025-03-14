@@ -1,8 +1,8 @@
 // Apify SDK - toolkit for building Apify Actors (Read more at https://docs.apify.com/sdk/js/)
 import { Actor, log, LogLevel } from 'apify';
 import { createAgent } from './agents.js';
-import { getApifyToken, isMCPserverRunning } from './utils.js';
 import { createMCPClient, startMCPServer } from './mcp.js';
+import { getApifyToken, isMCPserverRunning } from './utils.js';
 
 // this is ESM project, and as such, it requires you to specify extensions in your relative imports
 // read more about this here: https://nodejs.org/docs/latest-v18.x/api/esm.html#mandatory-file-extensions

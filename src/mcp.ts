@@ -3,7 +3,7 @@ import { log } from 'apify';
 import { MCP_SERVER_URL_BASE } from './const.js';
 
 /**
- * Starts the MCP server with optional actor specification
+ * Starts the MCP server with optional Actor specification
  * @param {string} apifyToken - The Apify API token for authentication
  * @param {string[]} [actors] - Optional array of Actor names to be included in the server
  * @returns {Promise<void>}

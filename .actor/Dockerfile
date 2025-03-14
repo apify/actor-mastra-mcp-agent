@@ -21,6 +21,9 @@ RUN npm run build
 # Create final image
 FROM apify/actor-node:22
 
+# Create and run as a non-root user.
+RUN adduser -h /home/apify -D apify
+
 # Copy just package.json and package-lock.json
 # to speed up the build using Docker layer cache.
 COPY package*.json ./
@@ -39,16 +42,13 @@ RUN npm --quiet set progress=false \
     && rm -r ~/.npm
 
 # Copy built JS files from builder image
-COPY --from=builder /usr/src/app/dist ./dist
+COPY --chown=apify --from=builder /usr/src/app/dist ./dist
 
 # Next, copy the remaining files and directories with the source code.
 # Since we do this after NPM install, quick build will be really fast
 # for most source file changes.
-COPY . ./
+COPY --chown=apify . ./
 
-# Create and run as a non-root user.
-RUN adduser -h /home/apify -D apify && \
-    chown -R apify:apify ./
 USER apify
 
 # Run the image.

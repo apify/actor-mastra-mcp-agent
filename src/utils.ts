@@ -8,7 +8,7 @@ export function getApifyToken (): string {
     return process.env.APIFY_TOKEN;
 }
 
-export async function isMCPserverRunning (): Promise<boolean> {
+export async function isMCPServerRunning (): Promise<boolean> {
     const token = getApifyToken();
     const apifyClient = new ApifyClient({ token });
 

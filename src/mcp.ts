@@ -1,6 +1,6 @@
 import { MastraMCPClient } from '@mastra/mcp';
 import { log } from 'apify';
-import { MCP_SERVER_URL_BASE, MCP_TIMEOUT } from './const.js';
+import { MCP_SERVER_URL_BASE } from './const.js';
 
 /**
  * Starts the MCP server with optional actor specification
@@ -13,18 +13,14 @@ export async function startMCPServer (
     actors?: string[],
 ): Promise<void> {
     log.info('Starting MCP server...');
-    const url = `${MCP_SERVER_URL_BASE}?token=${apifyToken}${actors ? `&actors=${actors.join(',')}` : ''}`;
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), MCP_TIMEOUT);
+    const url = `${MCP_SERVER_URL_BASE}?token=${apifyToken}${actors && actors.length > 0 ? `&actors=${actors.join(',')}` : ''}`;
     try {
-        const response = await fetch(url, { signal: controller.signal });
+        const response = await fetch(url);
         if (!response.ok) throw new Error(`MCP server start failed: ${response.status}`);
     } catch (error) {
         throw new Error(
             `MCP server start error: ${error instanceof Error ? error.message : 'Unknown'}`,
         );
-    } finally {
-        clearTimeout(timeout);
     }
 }
 

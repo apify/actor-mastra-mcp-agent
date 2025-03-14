@@ -1,9 +1,8 @@
 // Apify SDK - toolkit for building Apify Actors (Read more at https://docs.apify.com/sdk/js/)
 import { Actor, log, LogLevel } from 'apify';
 import { createAgent } from './agents.js';
-import { MCP_TIMEOUT } from './const.js';
 import { createMCPClient, startMCPServer } from './mcp.js';
-import { getApifyToken, isMCPserverRunning } from './utils.js';
+import { getApifyToken, isMCPServerRunning } from './utils.js';
 
 // this is ESM project, and as such, it requires you to specify extensions in your relative imports
 // read more about this here: https://nodejs.org/docs/latest-v18.x/api/esm.html#mandatory-file-extensions
@@ -44,24 +43,16 @@ if (debug) log.setLevel(LogLevel.DEBUG);
 const apifyToken = getApifyToken();
 const mcpClient = createMCPClient(apifyToken);
 try {
-    const mcpRunning = await isMCPserverRunning();
+    const mcpRunning = await isMCPServerRunning();
     log.debug(`MCP running: ${mcpRunning}`);
-    // if (!mcpRunning) await startMCPServer(apifyToken, actorsIncluded);
     if (!mcpRunning) {
         await startMCPServer(apifyToken, actorsIncluded);
-        if (!(await isMCPserverRunning())) throw new Error('MCP server failed to start');
+        if (!(await isMCPServerRunning())) throw new Error('MCP server failed to start');
     }
     // Connect to MCP server
     log.info('Connecting to MCP server...');
-    // await mcpClient.connect();
-    await Promise.race([
-        mcpClient.connect(),
-        new Promise((_, reject) => setTimeout(
-            () => reject(new Error('Connection timeout')),
-            MCP_TIMEOUT,
-        ),
-        ),
-    ]);
+    await mcpClient.connect();
+
     // Gracefully handle process exits
     process.on('exit', async () => {
         await mcpClient.disconnect();
@@ -73,7 +64,7 @@ try {
     // Create the agent
     const agent = createAgent(modelName);
 
-    log.info(`Querying the agent with the following query:\n${query}`);
+    log.info(`Querying the agent with the following query: ${query}`);
 
     // Query the agent and get the response
     const response = await agent.generate(query, {

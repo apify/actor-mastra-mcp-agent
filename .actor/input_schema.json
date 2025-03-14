@@ -26,7 +26,7 @@
       "title": "Actors included",
       "type": "array",
       "editor": "stringList",
-      "description": "List of Apify actor names to be included in the agent. If empty, only MCP server default actors will be used.",
+      "description": "List of Apify Actor names to be included in the agent. If empty, only MCP server default Actors will be used.",
       "prefill": [
           "clockworks/free-tiktok-scraper"
        ],

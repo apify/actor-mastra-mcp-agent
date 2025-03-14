@@ -111,7 +111,8 @@ Expandable to any Apify Actor from the [Apify Store](https://apify.com/store) vi
    ```bash
    apify push
    ```
-3. Run the Actor with your input via the Apify Console or API.
+3. Set Actor `OPENAI_API_KEY` [environment variable](https://docs.apify.com/platform/actors/development/programming-interface/environment-variables#custom-environment-variables).
+4. Run the Actor with your input via the Apify Console or API.
 
 ### Local development
 

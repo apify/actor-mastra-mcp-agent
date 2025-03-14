@@ -1,6 +1,7 @@
 // Apify SDK - toolkit for building Apify Actors (Read more at https://docs.apify.com/sdk/js/)
 import { Actor, log, LogLevel } from 'apify';
 import { createAgent } from './agents.js';
+import { MCP_TIMEOUT } from './const.js';
 import { createMCPClient, startMCPServer } from './mcp.js';
 import { getApifyToken, isMCPserverRunning } from './utils.js';
 
@@ -41,13 +42,26 @@ if (debug) log.setLevel(LogLevel.DEBUG);
 
 // Create MCP server
 const apifyToken = getApifyToken();
-log.debug(`MCP running: ${await isMCPserverRunning()}`);
-if (!(await isMCPserverRunning())) await startMCPServer(apifyToken, actorsIncluded);
 const mcpClient = createMCPClient(apifyToken);
 try {
+    const mcpRunning = await isMCPserverRunning();
+    log.debug(`MCP running: ${mcpRunning}`);
+    // if (!mcpRunning) await startMCPServer(apifyToken, actorsIncluded);
+    if (!mcpRunning) {
+        await startMCPServer(apifyToken, actorsIncluded);
+        if (!(await isMCPserverRunning())) throw new Error('MCP server failed to start');
+    }
     // Connect to MCP server
     log.info('Connecting to MCP server...');
-    await mcpClient.connect();
+    // await mcpClient.connect();
+    await Promise.race([
+        mcpClient.connect(),
+        new Promise((_, reject) => setTimeout(
+            () => reject(new Error('Connection timeout')),
+            MCP_TIMEOUT,
+        ),
+        ),
+    ]);
     // Gracefully handle process exits
     process.on('exit', async () => {
         await mcpClient.disconnect();
@@ -84,14 +98,15 @@ try {
         response: response.text,
     });
 } catch (error) {
-    log.error(`Actor failed with error: ${error}`);
-    await Actor.fail({
-        statusMessage: 'Actor faied with an error, see logs',
-    });
+    log.error(
+        `Actor failed with error: ${error instanceof Error ? error.stack : error}`,
+    );
+    await Actor.fail({ statusMessage: 'Actor failed with an error, see logs' });
 } finally {
     // Always disconnect when done
     await mcpClient.disconnect();
 }
 
 // Gracefully exit the Actor process. It's recommended to quit all Actors with an exit()
-await Actor.exit();
+// do not call process.exit() to wait for async operations to complete
+await Actor.exit({ exit: false });

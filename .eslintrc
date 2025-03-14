@@ -1,7 +1,6 @@
 {
     "root": true,
     "env": {
-        "browser": true,
         "es2022": true,  // Update from es2020
         "node": true
     },

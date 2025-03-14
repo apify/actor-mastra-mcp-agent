@@ -18,7 +18,7 @@ Built with TypeScript and the Apify SDK, this Actor serves as a flexible startin
 1. 📥 **Input**
    - Query (e.g., "Analyze posts from @openai and summarize AI trends")
    - Model selection (`gpt-4o` or `gpt-4o-mini`)
-   - Optional debug mode
+   - Actors included (e.g., `["clockworks/free-tiktok-scraper"]`) - list of Apify Actors to be served by the MCP server outside of the default list
 
 2. 🤖 **Processing with Mastra**
    - Initializes a `Helpful Assistant Agent` using the mastra.ai framework.
@@ -45,7 +45,7 @@ This Actor uses the [Pay Per Event](https://docs.apify.com/platform/actors/publi
 {
   "query": "Analyze the posts of @openai and summarize current trends in AI.",
   "modelName": "gpt-4o-mini",
-  "debug": true
+  "actorsIncluded": ["clockworks/free-tiktok-scraper"]
 }
 ```
 

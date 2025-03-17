@@ -1,6 +1,7 @@
 import { MastraMCPClient } from '@mastra/mcp';
-import { log } from 'apify';
-import { MCP_SERVER_URL_BASE } from './const.js';
+import { ApifyClient, log } from 'apify';
+import { MCP_ACTOR_ID, MCP_SERVER_URL_BASE } from './const.js';
+import { getApifyToken } from './utils.js';
 
 /**
  * Starts the MCP server with optional Actor specification
@@ -22,6 +23,19 @@ export async function startMCPServer (
             `MCP server start error: ${error instanceof Error ? error.message : 'Unknown'}`,
         );
     }
+}
+/**
+ * Stops the running MCP server
+ * @returns {Promise<void>}
+ */
+export async function stopMCPServer (): Promise<void> {
+    log.info('Stopping MCP server...');
+
+    const token = getApifyToken();
+    const apifyClient = new ApifyClient({ token });
+
+    const lastRun = apifyClient.actor(MCP_ACTOR_ID).lastRun();
+    if ((await lastRun.get())?.status === 'RUNNING') await lastRun.abort();
 }
 
 /**

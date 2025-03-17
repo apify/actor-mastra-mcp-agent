@@ -1,7 +1,7 @@
 // Apify SDK - toolkit for building Apify Actors (Read more at https://docs.apify.com/sdk/js/)
 import { Actor, log, LogLevel } from 'apify';
 import { createAgent } from './agents.js';
-import { createMCPClient, startMCPServer } from './mcp.js';
+import { createMCPClient, startMCPServer, stopMCPServer } from './mcp.js';
 import { getApifyToken, isMCPServerRunning } from './utils.js';
 
 // this is ESM project, and as such, it requires you to specify extensions in your relative imports
@@ -43,12 +43,8 @@ if (debug) log.setLevel(LogLevel.DEBUG);
 const apifyToken = getApifyToken();
 const mcpClient = createMCPClient(apifyToken);
 try {
-    const mcpRunning = await isMCPServerRunning();
-    log.debug(`MCP running: ${mcpRunning}`);
-    if (!mcpRunning) {
-        await startMCPServer(apifyToken, actorsIncluded);
-        if (!(await isMCPServerRunning())) throw new Error('MCP server failed to start');
-    }
+    await startMCPServer(apifyToken, actorsIncluded);
+    if (!(await isMCPServerRunning())) throw new Error('MCP server failed to start');
     // Connect to MCP server
     log.info('Connecting to MCP server...');
     await mcpClient.connect();
@@ -56,6 +52,7 @@ try {
     // Gracefully handle process exits
     process.on('exit', async () => {
         await mcpClient.disconnect();
+        await stopMCPServer();
     });
     // Fetch tools
     const tools = await mcpClient.tools();
@@ -92,11 +89,15 @@ try {
     log.error(
         `Actor failed with error: ${error instanceof Error ? error.stack : error}`,
     );
-    await Actor.fail({ statusMessage: 'Actor failed with an error, see logs' });
-} finally {
     // Always disconnect when done
     await mcpClient.disconnect();
+    await stopMCPServer();
+    await Actor.fail({ statusMessage: 'Actor failed with an error, see logs', exit: false });
 }
+
+// Always disconnect when done
+await mcpClient.disconnect();
+await stopMCPServer();
 
 // Gracefully exit the Actor process. It's recommended to quit all Actors with an exit()
 // do not call process.exit() to wait for async operations to complete

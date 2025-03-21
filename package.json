@@ -2,7 +2,7 @@
 	"name": "actor-mastra-mcp",
 	"version": "0.0.1",
 	"type": "module",
-	"description": "This is an example of an Apify Actor.",
+	"description": "Mastra AI Agent with Apify MCP Server.",
 	"engines": {
 		"node": ">=18.0.0"
 	},

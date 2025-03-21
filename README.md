@@ -7,6 +7,48 @@ The **Mastra AI Agent with Apify MCP Server** is a generic AI agent designed to 
 
 Built with TypeScript and the Apify SDK, this Actor serves as a flexible starting point for developers looking to create custom AI agents that tap into real-time web data and tools.
 
+## 🛠️ Use Cases
+
+### 1. TikTok Trend Analysis
+**Description**: Scrape TikTok posts from a specific account and summarize key trends.
+**Example Input**:
+```json
+{
+  "prompt": "Scrape the latest 10 posts from @techcrunch on TikTok and summarize key tech topics.",
+  "agentName": "TikTok Tech Analyzer",
+  "agentInstructions": "You are a tech analyst scraping TikTok posts to identify trends.",
+  "modelName": "gpt-4o-mini",
+  "actors": ["clockworks/free-tiktok-scraper"]
+}
+```
+**Example Output**:
+```json
+{
+  "prompt": "Scrape the latest 10 posts from @techcrunch on TikTok and summarize key tech topics.",
+  "response": "Here are the latest 10 posts from TechCrunch on TikTok, along with key tech topics summarized..."
+}
+```
+
+### 2. Web Research Synthesis
+**Description**: Search the web for a topic and distill top findings.
+**Example Input**:
+```json
+{
+  "prompt": "Search the web for recent advances in quantum computing and explain the top 3 breakthroughs.",
+  "agentName": "Quantum Research Bot",
+  "agentInstructions": "You are a research assistant that scours the web for technical info.",
+  "modelName": "gpt-4o",
+  "actors": ["apify/rag-web-browser"]
+}
+```
+**Example Output**:
+```json
+{
+  "prompt": "Search the web for recent advances in quantum computing and explain the top 3 breakthroughs.",
+  "response": "Here are the top three recent advances in quantum computing as of 2025..."
+}
+```
+
 ## 🎯 Features
 
 - 🤖 **AI-powered assistance**: Uses the [mastra.ai](https://mastra.ai/) framework to process queries with OpenAI models (e.g., `gpt-4o`, `gpt-4o-mini`).

@@ -74,8 +74,7 @@ export function createMCPClient (apifyToken: string): MastraMCPClient {
                 },
             },
         },
-        // TODO: uncomment after mastra.ai PR merge
-        // timeoutMillis: 300_000,
+        timeoutMillis: 300_000,
     });
 }
 

@@ -68,10 +68,14 @@ try {
         agentInstructions,
     });
 
-    log.info(`Prompting the agent with the following query: ${prompt}`);
+    // Enrich the query
+    const currentDateTime = new Date().toISOString();
+    const enrichedPrompt = `${prompt}\n\nCurrent Date and Time: ${currentDateTime}`;
+
+    log.info(`Prompting the agent with the following query: ${enrichedPrompt}`);
 
     // Query the agent and get the response
-    const response = await agent.generate(prompt, {
+    const response = await agent.generate(enrichedPrompt, {
         toolsets: {
             apify: tools,
         },
@@ -89,7 +93,7 @@ try {
     // Push results into the dataset
     log.info('Pushing results into the dataset...');
     await Actor.pushData({
-        prompt,
+        prompt: enrichedPrompt,
         response: response.text,
     });
 } catch (error) {

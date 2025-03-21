@@ -97,6 +97,7 @@ This Actor uses the mastra.ai framework to create a generic AI agent that intera
 3. **Output**:
    - Logs token usage and the agent's response.
    - Saves results to the dataset.
+   - Stops MCP server
 
 ### 🛠️ Tools
 

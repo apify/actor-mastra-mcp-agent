@@ -15,14 +15,15 @@ export async function startMCPServer (
 ): Promise<void> {
     log.info('Starting MCP server...');
     const url = `${MCP_SERVER_URL_BASE}?token=${apifyToken}${actors && actors.length > 0 ? `&actors=${actors.join(',')}` : ''}`;
+    let response;
     try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`MCP server start failed: ${response.status}`);
+        response = await fetch(url);
     } catch (error) {
         throw new Error(
             `MCP server start error: ${error instanceof Error ? error.message : 'Unknown'}`,
         );
     }
+    if (!response.ok) throw new Error(`MCP server start failed: ${response.status}`);
 }
 /**
  * Stops the running MCP server

@@ -11,7 +11,8 @@ Built with TypeScript and the Apify SDK, this Actor serves as a flexible startin
 
 ### TikTok trend analysis
 
-**Description**: Scrape TikTok posts from a specific account and summarize key trends.
+Scrape TikTok posts from a specific account and summarize key trends.
+
 **Example input**:
 ```json
 {
@@ -22,6 +23,7 @@ Built with TypeScript and the Apify SDK, this Actor serves as a flexible startin
   "actors": ["clockworks/free-tiktok-scraper"]
 }
 ```
+
 **Example output**:
 ```json
 {
@@ -32,7 +34,8 @@ Built with TypeScript and the Apify SDK, this Actor serves as a flexible startin
 
 ### Web research synthesis
 
-**Description**: Search the web for a topic and distill top findings.
+Search the web for a topic and distill top findings.
+
 **Example input**:
 ```json
 {
@@ -43,6 +46,7 @@ Built with TypeScript and the Apify SDK, this Actor serves as a flexible startin
   "actors": ["apify/rag-web-browser"]
 }
 ```
+
 **Example output**:
 ```json
 {
@@ -57,7 +61,7 @@ Tweak the input and create your own AI agent to tackle your tasks! 🚀
 
 ## 🎯 Features
 
-- 🤖 **AI-powered assistance**: Uses the [mastra.ai](https://mastra.ai/) framework to process queries with OpenAI models (e.g., `gpt-4o`, `gpt-4o-mini`).
+- 🤖 **AI-powered assistance**: Uses the [mastra.ai](https://mastra.ai/) framework to process prompts with OpenAI models (e.g., `gpt-4o`, `gpt-4o-mini`).
 - 🌐 **Apify MCP integration**: Connects to the Apify MCP Server to access tools like `clockworks/free-tiktok-scraper` and more.
 - 💰 **Pay-per-event pricing**: Flexible, usage-based billing for Actor runs and task completions.
 

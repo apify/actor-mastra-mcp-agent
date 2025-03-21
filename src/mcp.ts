@@ -1,6 +1,6 @@
 import { MastraMCPClient } from '@mastra/mcp';
 import { ApifyClient, log } from 'apify';
-import { MCP_ACTOR_ID, MCP_SERVER_URL_BASE } from './const.js';
+import { MCP_SERVER_URL_BASE } from './const.js';
 import { getApifyToken } from './utils.js';
 
 /**
@@ -15,21 +15,14 @@ export async function startMCPServer (
 ): Promise<string> {
     log.info('Starting MCP server...');
     const url = `${MCP_SERVER_URL_BASE}?actors=${actors.join(',')}`;
-    let response: Response;
-    try {
-        response = await fetch(url, {
-            headers: {
-                Authorization: `Bearer ${apifyToken}`,
-            },
-        });
-    } catch (error) {
-        throw new Error(
-            `MCP server start error: ${error instanceof Error ? error.message : 'Unknown'}`,
-        );
-    }
-    if (!response.ok) throw new Error(`MCP server start failed: ${response.status}`);
 
-    return await getMCPServerRunId();
+    const response = await fetch(url, {
+        headers: {
+            Authorization: `Bearer ${apifyToken}`,
+        },
+    });
+    const json = (await response.json()) as { data: { id: string } };
+    return json.data.id;
 }
 /**
  * Stops the running MCP server
@@ -77,15 +70,4 @@ export function createMCPClient (apifyToken: string): MastraMCPClient {
         // TODO: uncomment once the mastra PR is merged
         // timeoutMillis: 300_000,
     });
-}
-
-export async function getMCPServerRunId (): Promise<string> {
-    const token = getApifyToken();
-    const apifyClient = new ApifyClient({ token });
-
-    const run = await apifyClient.actor(MCP_ACTOR_ID).lastRun().get();
-
-    const runId = run?.id;
-    if (!runId) throw new Error('MCP server run ID not found');
-    return runId;
 }

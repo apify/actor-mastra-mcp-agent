@@ -3,13 +3,26 @@
   "type": "object",
   "schemaVersion": 1,
   "properties": {
-    "query": {
-      "title": "Query",
+    "prompt": {
+      "title": "Prompt",
       "type": "string",
-      "description": "Query for the agent.",
+      "description": "Prompt for the agent.",
       "editor": "textfield",
-      "prefill": "Analyze the posts of the @openai and @googledeepmind and summarize me current trends in the AI.",
-      "default": "This is a fallback test query, do nothing and !!do not call any tools!!. If asked to generate structured response, create a dummy one without optional fields, and empty lists - keep it as minimal as possible."
+      "prefill": "Analyze the posts of the @openai and @googledeepmind and summarize me current trends in the AI."
+    },
+    "agentName": {
+      "title": "Agent name",
+      "type": "string",
+      "description": "Name of the agent.",
+      "editor": "textfield",
+      "default": "Helpful Assistant Agent"
+    },
+    "agentInstructions": {
+      "title": "Agent instructions",
+      "type": "string",
+      "description": "Instructions for the agent. Defines who the agent is and what it does.",
+      "editor": "textfield",
+      "default": "You are a helpful assistant who aims to help users with their questions and tasks. You provide clear, accurate information and guidance while maintaining a friendly and professional attitude."
     },
     "modelName": {
       "title": "OpenAI model",
@@ -22,11 +35,11 @@
       "default": "gpt-4o-mini",
       "prefill": "gpt-4o-mini"
     },
-    "actorsIncluded": {
+    "actors": {
       "title": "Actors included",
       "type": "array",
       "editor": "stringList",
-      "description": "List of Apify Actor names to be included in the agent. If empty, only MCP server default Actors will be used.",
+      "description": "List of Apify Actor names to be available to the agent.",
       "prefill": [
           "clockworks/free-tiktok-scraper"
        ],
@@ -40,5 +53,5 @@
       "default": false
     }
   },
-  "required": ["query", "modelName"]
+  "required": ["prompt", "modelName", "actors"]
 }

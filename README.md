@@ -16,19 +16,21 @@ Built with TypeScript and the Apify SDK, this Actor serves as a flexible startin
 ## 🔄 How it works
 
 1. 📥 **Input**
-   - Query (e.g., "Analyze posts from @openai and summarize AI trends")
+   - Prompt (e.g., "Analyze posts from @openai and summarize AI trends")
+   - Agent name (e.g., "Helpful Assistant Agent") - name for the agent
+   - Agent instructions (e.g., "You are a helpful assistant...") - description of the agent's role, who the agent is and what it does
    - Model selection (`gpt-4o` or `gpt-4o-mini`)
-   - Actors included (e.g., `["clockworks/free-tiktok-scraper"]`) - list of Apify Actors to be served by the MCP server outside of the default list
+   - Actors (e.g., `["clockworks/free-tiktok-scraper"]`) - list of Apify Actors to be served by the MCP server for the agent
 
 2. 🤖 **Processing with Mastra**
-   - Initializes a `Helpful Assistant Agent` using the mastra.ai framework.
+   - Initializes the agent using the mastra.ai framework.
    - Connects to the Apify MCP Server via Server-Sent Events (SSE).
    - Fetches available tools (e.g., TikTok scrapers, web browsers) dynamically.
-   - Executes the query, leveraging MCP tools as needed.
+   - Executes the prompt, leveraging MCP tools as needed.
 
 3. 📤 **Output**
    - Returns the agent’s response as text.
-   - Stores results in an Apify dataset with the query and response.
+   - Stores results in an Apify dataset with the prompt and response.
 
 ### 💰 Pricing
 
@@ -43,9 +45,11 @@ This Actor uses the [Pay Per Event](https://docs.apify.com/platform/actors/publi
 
 ```json
 {
-  "query": "Analyze the posts of @openai and summarize current trends in AI.",
+  "prompt": "Analyze the posts of @openai and summarize current trends in AI.",
+  "agentName": "Social Media Analyst",
+  "agentInstructions": "You are a social media analyst who specializes in analyzing posts from various social media platforms.",
   "modelName": "gpt-4o-mini",
-  "actorsIncluded": ["clockworks/free-tiktok-scraper"]
+  "actors": ["clockworks/free-tiktok-scraper"]
 }
 ```
 
@@ -54,8 +58,8 @@ This Actor uses the [Pay Per Event](https://docs.apify.com/platform/actors/publi
 Dataset entry:
 ```json
 {
-  "query": "Analyze the posts of @openai and summarize current trends in AI.",
-  "response": "Here’s a summary of the recent posts from OpenAI's Instagram account, highlighting current trends in AI..."
+  "prompt": "Analyze the posts of @openai and summarize current trends in AI.",
+  "response": "Here’s a summary of the recent posts from OpenAI's account, highlighting current trends in AI..."
 }
 ```
 
@@ -69,35 +73,6 @@ Dataset entry:
 ## 🤖 Under the hood with [mastra.ai](https://mastra.ai/)
 
 This Actor uses the mastra.ai framework to create a generic AI agent that interacts with the Apify ecosystem:
-
-### 👤 The agent
-
-- **Helpful Assistant Agent**:
-  ```typescript
-  new Agent({
-    name: 'Helpful Assistant Agent',
-    instructions: 'You are a helpful assistant who aims to help users with their questions and tasks.',
-    model: openai(modelName),
-  });
-  ```
-  - Goal: Answer queries accurately and leverage MCP tools when needed.
-  - Tools: Dynamically fetched from the Apify MCP Server (e.g., `clockworks/free-tiktok-scraper`).
-
-### 🔄 Workflow
-
-1. **Initialization**:
-   - Starts the MCP Server if it’s not already running.
-   - Connects via SSE using the `MastraMCPClient`.
-
-2. **Execution**:
-   - Queries the agent with user input.
-   - Integrates MCP tools into the agent’s toolset.
-   - Processes the response using the selected OpenAI model.
-
-3. **Output**:
-   - Logs token usage and the agent's response.
-   - Saves results to the dataset.
-   - Stops MCP server
 
 ### 🛠️ Tools
 
@@ -123,7 +98,7 @@ Expandable to any Apify Actor from the [Apify Store](https://apify.com/store) vi
    ```
 2. Run locally:
    ```bash
-   OPENAI_API_KEY=<your-openai-api-key> apify run -i '{"query": "Show me latest post from @openai TikTok profile", "actorsIncluded": ["clockworks/free-tiktok-scraper"]}'
+   OPENAI_API_KEY=<your-openai-api-key> apify run -i '{"prompt": "Show me latest post from @openai TikTok profile", "actors": ["clockworks/free-tiktok-scraper"]}'
    ```
 
 ## 📖 Learn more
@@ -138,7 +113,7 @@ Expandable to any Apify Actor from the [Apify Store](https://apify.com/store) vi
 
 ## 🚀 Get started
 
-Ready to build your own AI agent? Deploy this Actor on Apify, tweak the query, and explore the possibilities of mastra.ai and MCP! 🤖✨
+Ready to build your own AI agent? Deploy this Actor on Apify, tweak the input, and explore the possibilities of mastra.ai and MCP! 🤖✨
 
 ## 🌐 Open source
 

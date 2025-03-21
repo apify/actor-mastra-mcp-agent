@@ -7,11 +7,12 @@ The **Mastra AI Agent with Apify MCP Server** is a generic AI agent designed to 
 
 Built with TypeScript and the Apify SDK, this Actor serves as a flexible starting point for developers looking to create custom AI agents that tap into real-time web data and tools.
 
-## 🛠️ Use Cases
+## 🛠️ Use cases
 
-### 1. TikTok Trend Analysis
+### TikTok trend analysis
+
 **Description**: Scrape TikTok posts from a specific account and summarize key trends.
-**Example Input**:
+**Example input**:
 ```json
 {
   "prompt": "Scrape the latest 10 posts from @techcrunch on TikTok and summarize key tech topics.",
@@ -21,7 +22,7 @@ Built with TypeScript and the Apify SDK, this Actor serves as a flexible startin
   "actors": ["clockworks/free-tiktok-scraper"]
 }
 ```
-**Example Output**:
+**Example output**:
 ```json
 {
   "prompt": "Scrape the latest 10 posts from @techcrunch on TikTok and summarize key tech topics.",
@@ -29,9 +30,10 @@ Built with TypeScript and the Apify SDK, this Actor serves as a flexible startin
 }
 ```
 
-### 2. Web Research Synthesis
+### Web research synthesis
+
 **Description**: Search the web for a topic and distill top findings.
-**Example Input**:
+**Example input**:
 ```json
 {
   "prompt": "Search the web for recent advances in quantum computing and explain the top 3 breakthroughs.",
@@ -41,13 +43,17 @@ Built with TypeScript and the Apify SDK, this Actor serves as a flexible startin
   "actors": ["apify/rag-web-browser"]
 }
 ```
-**Example Output**:
+**Example output**:
 ```json
 {
   "prompt": "Search the web for recent advances in quantum computing and explain the top 3 breakthroughs.",
   "response": "Here are the top three recent advances in quantum computing as of 2025..."
 }
 ```
+
+### Your use case 💡
+
+Tweak the input and create your own AI agent to tackle your tasks! 🚀
 
 ## 🎯 Features
 
@@ -83,7 +89,7 @@ This Actor uses the [Pay Per Event](https://docs.apify.com/platform/actors/publi
 | Actor start            | $0.10       |
 | Task completion        | $0.40       |
 
-### Input Example
+### Input example
 
 ```json
 {
@@ -95,7 +101,7 @@ This Actor uses the [Pay Per Event](https://docs.apify.com/platform/actors/publi
 }
 ```
 
-### Output Example
+### Output example
 
 Dataset entry:
 ```json

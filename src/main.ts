@@ -29,8 +29,6 @@ await Actor.charge({ eventName: 'actor-start' });
 
 // Handle input
 const {
-    // The query default value is provided only for template testing purposes.
-    // You can remove it.
     query,
     modelName,
     debug = false,

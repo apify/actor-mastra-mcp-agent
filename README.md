@@ -57,7 +57,7 @@ Search the web for a topic and distill top findings.
 
 ### Your use case 💡
 
-Tweak the input and create your own AI agent to tackle your tasks! 🚀
+Tweak the input and create your own AI agent to tackle your use case! 🚀
 
 ## 🎯 Features
 

@@ -1,5 +1,6 @@
 // Apify SDK - toolkit for building Apify Actors (Read more at https://docs.apify.com/sdk/js/)
 import { Actor, log, LogLevel } from 'apify';
+import { gracefulExit } from 'exit-hook';
 import { createAgent } from './agents.js';
 import { createMCPClient, startMCPServer, stopMCPServer } from './mcp.js';
 import { getApifyToken } from './utils.js';
@@ -20,99 +21,112 @@ interface Input {
     toolTimeout: number;
 }
 
-// The init() call configures the Actor for its environment. It's recommended to start every Actor with an init()
-await Actor.init();
+async function main (): Promise<number> {
+    // The init() call configures the Actor for its environment. It's recommended to start every Actor with an init()
+    await Actor.init();
 
-/**
- * Actor code
- */
+    /**
+     * Actor code
+     */
 
-// Charge for Actor start
-await Actor.charge({ eventName: 'actor-start' });
+    // Charge for Actor start
+    await Actor.charge({ eventName: 'actor-start' });
 
-// Handle input
-const {
-    prompt,
-    agentName,
-    agentInstructions,
-    modelName,
-    debug = false,
-    actors,
-    toolTimeout,
-} = (await Actor.getInput()) as Input;
-if (!prompt) throw new Error('An agent prompt is required.');
-if (!actors || actors.length === 0) throw new Error('At least one Apify Actor name is required.');
-if (debug) log.setLevel(LogLevel.DEBUG);
-
-// Create MCP server
-const apifyToken = getApifyToken();
-const timeoutMillis = toolTimeout * 1000;
-const mcpClient = createMCPClient(apifyToken, timeoutMillis);
-let mcpRunId = '';
-try {
-    mcpRunId = await startMCPServer(apifyToken, actors);
-    // Connect to MCP server
-    log.info('Connecting to MCP server...');
-    await mcpClient.connect();
-
-    // Gracefully handle process exits
-    process.on('exit', async () => {
-        await mcpClient.disconnect();
-        await stopMCPServer(mcpRunId);
-    });
-    // Fetch tools
-    const tools = await mcpClient.tools();
-    log.debug(`Tools: ${JSON.stringify(tools)}`);
-
-    // Create the agent
-    const agent = createAgent({
-        modelName,
+    // Handle input
+    const {
+        prompt,
         agentName,
         agentInstructions,
-    });
+        modelName,
+        debug = false,
+        actors,
+        toolTimeout,
+    } = (await Actor.getInput()) as Input;
+    if (!prompt) throw new Error('An agent prompt is required.');
+    if (!actors || actors.length === 0) throw new Error('At least one Apify Actor name is required.');
+    if (debug) log.setLevel(LogLevel.DEBUG);
 
-    // Enrich the query
-    const currentDateTime = new Date().toISOString();
-    const enrichedPrompt = `${prompt}\n\nCurrent Date and Time: ${currentDateTime}`;
+    // Create MCP server
+    const apifyToken = getApifyToken();
+    const timeoutMillis = toolTimeout * 1000;
+    const mcpClient = createMCPClient(apifyToken, timeoutMillis);
+    let mcpRunId = '';
+    try {
+        mcpRunId = await startMCPServer(apifyToken, actors);
+        // Connect to MCP server
+        log.info('Connecting to MCP server...');
+        await mcpClient.connect();
 
-    log.info(`Prompting the agent with the following query: ${enrichedPrompt}`);
+        // Gracefully handle process exits
+        process.on('exit', async () => {
+            await mcpClient.disconnect();
+            await stopMCPServer(mcpRunId);
+        });
+        // Fetch tools
+        const tools = await mcpClient.tools();
+        log.debug(`Tools: ${JSON.stringify(tools)}`);
 
-    // Query the agent and get the response
-    const response = await agent.generate(enrichedPrompt, {
-        toolsets: {
-            apify: tools,
-        },
-    });
+        // Create the agent
+        const agent = createAgent({
+            modelName,
+            agentName,
+            agentInstructions,
+        });
 
-    log.info(`Agent response: ${response.text}`);
-    log.info(`Tokens used total: ${response.usage.totalTokens}`);
-    log.info(`Prompt tokens used: ${response.usage.promptTokens}`);
-    log.info(`Completion tokens used: ${response.usage.completionTokens}`);
+        // Enrich the query
+        const currentDateTime = new Date().toISOString();
+        const enrichedPrompt = `${prompt}\n\nCurrent Date and Time: ${currentDateTime}`;
 
-    // Charge for the task completion
-    log.info('Charging for task completion...');
-    await Actor.charge({ eventName: 'task-completed' });
+        log.info(
+            `Prompting the agent with the following query: ${enrichedPrompt}`,
+        );
 
-    // Push results into the dataset
-    log.info('Pushing results into the dataset...');
-    await Actor.pushData({
-        prompt: enrichedPrompt,
-        response: response.text,
-    });
-} catch (error) {
-    log.error(
-        `Actor failed with error: ${error instanceof Error ? error.stack : error}`,
-    );
-    await Actor.fail({
-        statusMessage: 'Actor failed with an error, see logs',
-        exit: false,
-    });
-} finally {
+        // Query the agent and get the response
+        const response = await agent.generate(enrichedPrompt, {
+            toolsets: {
+                apify: tools,
+            },
+        });
+
+        log.info(`Agent response: ${response.text}`);
+        log.info(`Tokens used total: ${response.usage.totalTokens}`);
+        log.info(`Prompt tokens used: ${response.usage.promptTokens}`);
+        log.info(`Completion tokens used: ${response.usage.completionTokens}`);
+
+        // Charge for the task completion
+        log.info('Charging for task completion...');
+        await Actor.charge({ eventName: 'task-completed' });
+
+        // Push results into the dataset
+        log.info('Pushing results into the dataset...');
+        await Actor.pushData({
+            prompt: enrichedPrompt,
+            response: response.text,
+        });
+    } catch (error) {
+        log.error(
+            `Actor failed with error: ${error instanceof Error ? error.stack : error}`,
+        );
+
+        // Always disconnect when done
+        await mcpClient.disconnect();
+        if (mcpRunId) await stopMCPServer(mcpRunId);
+        await Actor.fail({
+            statusMessage: 'Actor failed with an error, see logs',
+            exit: false,
+        });
+        return 1;
+    }
+
     // Always disconnect when done
     await mcpClient.disconnect();
     if (mcpRunId) await stopMCPServer(mcpRunId);
+
+    // Gracefully exit the Actor process. It's recommended to quit all Actors with an exit()
+    // do not call process.exit() to wait for async operations to complete
+    await Actor.exit({ exit: false });
+    return 0;
 }
 
-// Gracefully exit the Actor process. It's recommended to quit all Actors with an exit()
-// do not call process.exit() to wait for async operations to complete
-await Actor.exit({ exit: false });
+const exitCode = await main();
+gracefulExit(exitCode);

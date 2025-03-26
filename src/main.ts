@@ -17,6 +17,7 @@ interface Input {
     modelName: string;
     debug: boolean;
     actors: string[];
+    toolTimeout: number;
 }
 
 // The init() call configures the Actor for its environment. It's recommended to start every Actor with an init()
@@ -37,6 +38,7 @@ const {
     modelName,
     debug = false,
     actors,
+    toolTimeout,
 } = (await Actor.getInput()) as Input;
 if (!prompt) throw new Error('An agent prompt is required.');
 if (!actors || actors.length === 0) throw new Error('At least one Apify Actor name is required.');
@@ -44,7 +46,8 @@ if (debug) log.setLevel(LogLevel.DEBUG);
 
 // Create MCP server
 const apifyToken = getApifyToken();
-const mcpClient = createMCPClient(apifyToken);
+const timeoutMillis = toolTimeout * 1000;
+const mcpClient = createMCPClient(apifyToken, timeoutMillis);
 let mcpRunId = '';
 try {
     mcpRunId = await startMCPServer(apifyToken, actors);

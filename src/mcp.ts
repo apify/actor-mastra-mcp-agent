@@ -41,9 +41,13 @@ export async function stopMCPServer (runId: string): Promise<void> {
 /**
  * Creates an MCP client instance
  * @param {string} apifyToken - The Apify API token for authentication
+ * @param {number} [timeout=300_000] - The timeout in milliseconds for the client
  * @returns {MastraMCPClient} MCP client instance
  */
-export function createMCPClient (apifyToken: string): MastraMCPClient {
+export function createMCPClient (
+    apifyToken: string,
+    timeout = 300_000,
+): MastraMCPClient {
     return new MastraMCPClient({
         name: 'apify-client',
         server: {
@@ -67,6 +71,6 @@ export function createMCPClient (apifyToken: string): MastraMCPClient {
                 },
             },
         },
-        timeout: 300_000,
+        timeout,
     });
 }

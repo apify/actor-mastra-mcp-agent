@@ -45,6 +45,12 @@
        ],
        "default": []
     },
+    "toolTimeout": {
+      "title": "MCP tool call timeout (s)",
+      "type": "integer",
+      "description": "Maximum time in seconds to wait for a tool call to complete.",
+       "default": 300
+    },
     "debug": {
       "title": "Debug",
       "type": "boolean",

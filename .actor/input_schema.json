@@ -1,0 +1,63 @@
+{
+  "title": "Mastra Agent TypeScript",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "prompt": {
+      "title": "Prompt",
+      "type": "string",
+      "description": "Prompt for the agent.",
+      "editor": "textfield",
+      "prefill": "Analyze the posts of the @openai and @googledeepmind and summarize me current trends in the AI."
+    },
+    "agentName": {
+      "title": "Agent name",
+      "type": "string",
+      "description": "Name of the agent.",
+      "editor": "textfield",
+      "default": "Helpful Assistant Agent"
+    },
+    "agentInstructions": {
+      "title": "Agent instructions",
+      "type": "string",
+      "description": "Instructions for the agent. Defines who the agent is and what it does.",
+      "editor": "textfield",
+      "default": "You are a helpful assistant who aims to help users with their questions and tasks. You provide clear, accurate information and guidance while maintaining a friendly and professional attitude."
+    },
+    "modelName": {
+      "title": "OpenAI model",
+      "type": "string",
+      "description": "The OpenAI model to use. Currently supported models are gpt-4o and gpt-4o-mini.",
+      "enum": [
+        "gpt-4o",
+        "gpt-4o-mini"
+      ],
+      "default": "gpt-4o-mini",
+      "prefill": "gpt-4o-mini"
+    },
+    "actors": {
+      "title": "Actors included",
+      "type": "array",
+      "editor": "stringList",
+      "description": "List of Apify Actor names to be available to the agent.",
+      "prefill": [
+          "clockworks/free-tiktok-scraper"
+       ],
+       "default": []
+    },
+    "toolTimeout": {
+      "title": "MCP tool call timeout (s)",
+      "type": "integer",
+      "description": "Maximum time in seconds to wait for a tool call to complete.",
+       "default": 300
+    },
+    "debug": {
+      "title": "Debug",
+      "type": "boolean",
+      "description": "If enabled, Actor provides detailed information with tool calls and reasoning.",
+      "editor": "checkbox",
+      "default": false
+    }
+  },
+  "required": ["prompt", "modelName", "actors"]
+}

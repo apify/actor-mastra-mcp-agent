@@ -1,0 +1,24 @@
+{
+  "actorSpecification": 1,
+  "views": {
+    "overview": {
+      "title": "Overview",
+      "transformation": {
+        "fields": ["prompt", "response"]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "prompt": {
+            "label": "Prompt",
+            "format": "text"
+          },
+          "response": {
+            "label": "Response",
+            "format": "text"
+          }
+        }
+      }
+    }
+  }
+}

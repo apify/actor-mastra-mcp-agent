@@ -1,0 +1,20 @@
+# github
+.github
+
+# configurations
+.idea
+.vscode
+
+# crawlee and apify storage folders
+apify_storage
+crawlee_storage
+storage
+
+# installed files
+node_modules
+
+# git folder
+.git
+
+# dist folder
+dist

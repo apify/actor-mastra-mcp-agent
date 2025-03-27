@@ -1,0 +1,25 @@
+{
+    "root": true,
+    "env": {
+        "es2022": true,  // Update from es2020
+        "node": true
+    },
+    "extends": [
+        "@apify/eslint-config-ts"
+    ],
+    "parserOptions": {
+        "project": "./tsconfig.json",
+        "ecmaVersion": 2022  // Match ES2022
+    },
+    "ignorePatterns": [
+        "node_modules",
+        "dist",
+        "**/*.d.ts"
+    ],
+    "rules": {
+        "@typescript-eslint/no-unused-vars": ["error"],  // Enforce unused vars
+        "import/order": ["error", { "alphabetize": { "order": "asc" } }],  // Sort imports
+        "@typescript-eslint/space-before-function-paren": "off", // Disable the invalid rule
+        "space-before-function-paren": ["error", "always"]     // Use ESLint’s rule instead
+    }
+}

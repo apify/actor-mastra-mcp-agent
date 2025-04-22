@@ -21,7 +21,7 @@
       "title": "Agent instructions",
       "type": "string",
       "description": "Instructions for the agent. Defines who the agent is and what it does.",
-      "editor": "textfield",
+      "editor": "textarea",
       "default": "You are a helpful assistant who aims to help users with their questions and tasks. You provide clear, accurate information and guidance while maintaining a friendly and professional attitude."
     },
     "modelName": {
@@ -34,6 +34,14 @@
       ],
       "default": "gpt-4o-mini",
       "prefill": "gpt-4o-mini"
+    },
+    "mcpUrl": {
+      "title": "MCP Server URL",
+      "type": "string",
+      "description": "The URL of the MCP Server to use.",
+      "editor": "textfield",
+      "default": "https://actors-mcp-server.apify.actor",
+      "prefill": "https://actors-mcp-server.apify.actor"
     },
     "actors": {
       "title": "Actors included",
@@ -50,6 +58,12 @@
       "type": "integer",
       "description": "Maximum time in seconds to wait for a tool call to complete.",
        "default": 300
+    },
+    "maxSteps": {
+      "title": "Maximum steps for tool calls",
+      "type": "integer",
+      "description": "Controls the maximum number of sequential LLM calls an agent can make",
+      "default": 3
     },
     "debug": {
       "title": "Debug",

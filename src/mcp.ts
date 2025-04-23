@@ -1,20 +1,21 @@
 import { MastraMCPClient } from '@mastra/mcp';
 import { ApifyClient, log } from 'apify';
-import { MCP_SERVER_URL_BASE } from './const.js';
 import { getApifyToken } from './utils.js';
 
 /**
  * Starts the MCP server with optional Actor specification
+ * @param {string} mcpUrl - The MCP server URL
  * @param {string} apifyToken - The Apify API token for authentication
  * @param {string[]} [actors] - Optional array of Actor names to be included in the server
  * @returns {Promise<string>} The run ID of the MCP server
  */
 export async function startMCPServer (
+    mcpUrl: string,
     apifyToken: string,
     actors: string[],
 ): Promise<string> {
-    log.info('Starting MCP server...');
-    const url = `${MCP_SERVER_URL_BASE}?actors=${actors.join(',')}`;
+    const url = `${mcpUrl}?actors=${actors.join(',')}`;
+    log.info(`Starting MCP server with url: ${url}`);
 
     const response = await fetch(url, {
         headers: {
@@ -40,18 +41,20 @@ export async function stopMCPServer (runId: string): Promise<void> {
 
 /**
  * Creates an MCP client instance
+ * @param {string} mcpUrl - The MCP server URL
  * @param {string} apifyToken - The Apify API token for authentication
  * @param {number} [timeout=300_000] - The timeout in milliseconds for the client
  * @returns {MastraMCPClient} MCP client instance
  */
 export function createMCPClient (
+    mcpUrl: string,
     apifyToken: string,
-    timeout = 300_000,
+    timeout: number = 300_000,
 ): MastraMCPClient {
     return new MastraMCPClient({
         name: 'apify-client',
         server: {
-            url: new URL(`${MCP_SERVER_URL_BASE}/sse`),
+            url: new URL(`${mcpUrl}/sse`),
             requestInit: {
                 headers: {
                     Authorization: `Bearer ${apifyToken}`,
